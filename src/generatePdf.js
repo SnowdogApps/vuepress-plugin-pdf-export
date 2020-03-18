@@ -41,6 +41,8 @@ module.exports = async (ctx, {
       title
     } = exportPages[i]
 
+    await browserPage.setDefaultNavigationTimeout(0)
+
     await browserPage.goto(
       location,
       { waitUntil: 'networkidle2' }
