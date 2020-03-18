@@ -1,20 +1,24 @@
-/* global SORTER, PUPPETEER_LAUNCH_OPTIONS, OUTPUT_FILE_NAME */
-
 const puppeteer = require('puppeteer')
 const pdf = require('pdfjs')
 const { join } = require('path')
 const { fs, logger, chalk } = require('@vuepress/shared-utils')
 const { yellow, gray } = chalk
 
-module.exports = async (ctx, { port, host }) => {
+module.exports = async (ctx, {
+  port,
+  host,
+  sorter,
+  outputFileName,
+  puppeteerLaunchOptions
+}) => {
   const { pages, tempPath } = ctx
   const tempDir = join(tempPath, 'pdf')
   fs.ensureDirSync(tempDir)
 
   let exportPages = pages.slice(0)
 
-  if (typeof SORTER === 'function') {
-    exportPages = exportPages.sort(SORTER)
+  if (typeof sorter === 'function') {
+    exportPages = exportPages.sort(sorter)
   }
 
   exportPages = exportPages.map(page => {
@@ -26,7 +30,7 @@ module.exports = async (ctx, { port, host }) => {
     }
   })
 
-  const browser = await puppeteer.launch(PUPPETEER_LAUNCH_OPTIONS)
+  const browser = await puppeteer.launch(puppeteerLaunchOptions)
   const browserPage = await browser.newPage()
 
   for (let i = 0; i < exportPages.length; i++) {
@@ -50,24 +54,22 @@ module.exports = async (ctx, { port, host }) => {
     logger.success(`Generated ${yellow(title)} ${gray(`${url}`)}`)
   }
 
-  const files = exportPages.map(({ path }) => path)
-  const outputFile = `${OUTPUT_FILE_NAME}.pdf`
-
   await new Promise(resolve => {
     const mergedPdf = new pdf.Document()
 
-    files.forEach(filePath => {
-      const file = fs.readFileSync(filePath)
-      const page = new pdf.ExternalDocument(file)
-      mergedPdf.addPagesOf(page)
-    })
+    exportPages
+      .map(({ path }) => fs.readFileSync(path))
+      .forEach(file => {
+        const page = new pdf.ExternalDocument(file)
+        mergedPdf.addPagesOf(page)
+      })
 
     mergedPdf.asBuffer((err, data) => {
       if (err) {
         throw err
       } else {
-        fs.writeFileSync(outputFile, data, { encoding: 'binary' })
-        logger.success(`Export ${yellow(outputFile)} file!`)
+        fs.writeFileSync(outputFileName, data, { encoding: 'binary' })
+        logger.success(`Export ${yellow(outputFileName)} file!`)
         resolve()
       }
     })

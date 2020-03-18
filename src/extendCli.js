@@ -1,39 +1,46 @@
-/* global THEME */
-
-
-const { join } = require('path')
 const { dev } = require('vuepress')
-const { logger, chalk } = require('@vuepress/shared-utils')
+const { logger, chalk, path } = require('@vuepress/shared-utils')
+const { join } = path
 const { red } = chalk
 
-import generatePDF from './generatePdf'
+const generatePDF = require('./generatePdf')
 
-module.exports = cli => {
-  cli
-    .command('export [targetDir]', 'export current vuepress site to a PDF file')
-    .allowUnknownOptions()
-    .action(async (dir = '.') => {
-      dir = join(process.cwd(), dir)
+module.exports = options => {
+  const theme = options.theme || '@vuepress/default'
+  const sorter = options.sorter || false
+  const outputFileName = options.outputFileName || 'site.pdf'
+  const puppeteerLaunchOptions = options.puppeteerLaunchOptions || {}
 
-      const nCtx = await dev({
-        sourceDir: dir,
-        clearScreen: false,
-        theme: THEME
-      })
+  return cli => {
+    cli
+      .command('export [targetDir]', 'export current vuepress site to a PDF file')
+      .allowUnknownOptions()
+      .action(async (dir = '.') => {
+        dir = join(process.cwd(), dir)
 
-      logger.setOptions({ logLevel: 3 })
-      logger.info(`Start to generate current site to PDF ...`)
-
-      try {
-        await generatePDF(nCtx, {
-          port: nCtx.devProcess.port,
-          host: nCtx.devProcess.host
+        const nCtx = await dev({
+          sourceDir: dir,
+          clearScreen: false,
+          theme
         })
-      } catch (error) {
-        console.error(red(error))
-      }
 
-      nCtx.devProcess.server.close()
-      process.exit(0)
-    })
+        logger.setOptions({ logLevel: 3 })
+        logger.info(`Start to generate current site to PDF ...`)
+
+        try {
+          await generatePDF(nCtx, {
+            port: nCtx.devProcess.port,
+            host: nCtx.devProcess.host,
+            sorter,
+            outputFileName,
+            puppeteerLaunchOptions
+          })
+        } catch (error) {
+          console.error(red(error))
+        }
+
+        nCtx.devProcess.server.close()
+        process.exit(0)
+      })
+  }
 }
