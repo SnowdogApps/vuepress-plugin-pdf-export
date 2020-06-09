@@ -10,6 +10,7 @@ module.exports = options => {
   const sorter = options.sorter || false
   const outputFileName = options.outputFileName || 'site.pdf'
   const puppeteerLaunchOptions = options.puppeteerLaunchOptions || {}
+  const pageOptions = options.pageOptions || {}
 
   return cli => {
     cli
@@ -33,7 +34,8 @@ module.exports = options => {
             host: nCtx.devProcess.host,
             sorter,
             outputFileName,
-            puppeteerLaunchOptions
+            puppeteerLaunchOptions,
+            pageOptions
           })
         } catch (error) {
           console.error(red(error))

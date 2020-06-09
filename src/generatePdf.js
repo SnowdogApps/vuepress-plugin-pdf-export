@@ -9,7 +9,8 @@ module.exports = async (ctx, {
   host,
   sorter,
   outputFileName,
-  puppeteerLaunchOptions
+  puppeteerLaunchOptions,
+  pageOptions
 }) => {
   const { pages, tempPath } = ctx
   const tempDir = join(tempPath, 'pdf')
@@ -50,7 +51,8 @@ module.exports = async (ctx, {
 
     await browserPage.pdf({
       path: pagePath,
-      format: 'A4'
+      format: 'A4',
+      ...pageOptions
     })
 
     logger.success(`Generated ${yellow(title)} ${gray(`${url}`)}`)
