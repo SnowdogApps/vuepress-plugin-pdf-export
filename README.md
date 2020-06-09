@@ -38,18 +38,8 @@ To run this plugin on Gitlab CI you may want to run Chrome with `no-sandbox` fla
 module.exports = {
   plugins: [
     ['@snowdog/vuepress-plugin-pdf-export', {
-      // to pass puppeteer launch options
       puppeteerLaunchOptions: {
         args: ['--no-sandbox', '--disable-setuid-sandbox']
-      },
-      // to pass puppeteer page options
-      pageOptions: {
-        margin: {
-          top: '1cm',
-          bottom: '1cm',
-          left: '1cm',
-          right: '1cm'
-        }
       }
     }]
   ]
