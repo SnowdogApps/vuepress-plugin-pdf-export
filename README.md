@@ -12,6 +12,24 @@ Vuepress plugin for exporting site as PDF
 - `sorter` - function for changing pages order (default `false`)
 - `outputFileName` - name of output file (default `site.pdf`)
 - `puppeteerLaunchOptions` - [Puppeteer launch options object](https://github.com/puppeteer/puppeteer/blob/v2.1.1/docs/api.md#puppeteerlaunchoptions) (default `{}`)
+- `pageOptions` - [Puppeteer page formatting options object](https://github.com/puppeteer/puppeteer/blob/v2.1.1/docs/api.md#pagepdfoptions) (default `{format: 'A4'}`)
+
+### Usage
+
+Using this plugin:
+
+``` js
+// in .vuepress/config.js
+module.exports = {
+  plugins: ['@snowdog/vuepress-plugin-pdf-export']
+}
+```
+
+Then run:
+
+``` bash
+vuepress export [path/to/your/docs]
+```
 
 ### Tips
 To run this plugin on Gitlab CI you may want to run Chrome with `no-sandbox` flag. [Details](https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#setting-up-chrome-linux-sandbox)
