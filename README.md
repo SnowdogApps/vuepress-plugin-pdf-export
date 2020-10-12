@@ -4,7 +4,7 @@ Vuepress plugin for exporting site as PDF
 ## Features
 - Exports whole Vuepress based page as a single PDF file
 - Applies styles to hide UI elements like navigation or sidebar
-- Doesn't other languages like Java to run
+- Doesn't require other runtimes like Java to operate
 - Designed to work well in headless environments like CI runners
 
 ## Config options
