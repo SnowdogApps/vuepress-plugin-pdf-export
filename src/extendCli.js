@@ -11,6 +11,7 @@ module.exports = options => {
   const outputFileName = options.outputFileName || 'site.pdf'
   const puppeteerLaunchOptions = options.puppeteerLaunchOptions || {}
   const pageOptions = options.pageOptions || {}
+  const excludedPages = options.excludedPages || []
 
   return cli => {
     cli
@@ -33,6 +34,7 @@ module.exports = options => {
             port: nCtx.devProcess.port,
             host: nCtx.devProcess.host,
             sorter,
+            excludedPages,
             outputFileName,
             puppeteerLaunchOptions,
             pageOptions

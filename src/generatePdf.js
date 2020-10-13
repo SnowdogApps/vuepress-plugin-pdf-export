@@ -10,7 +10,8 @@ module.exports = async (ctx, {
   sorter,
   outputFileName,
   puppeteerLaunchOptions,
-  pageOptions
+  pageOptions,
+  excludedPages
 }) => {
   const { pages, tempPath } = ctx
   const tempDir = join(tempPath, 'pdf')
@@ -30,6 +31,10 @@ module.exports = async (ctx, {
       path: `${tempDir}/${page.key}.pdf`
     }
   })
+
+  if (Array.isArray(excludedPages)) {
+    exportPages = exportPages.filter(page => !excludedPages.includes(page.url))
+  }
 
   const browser = await puppeteer.launch(puppeteerLaunchOptions)
   const browserPage = await browser.newPage()
