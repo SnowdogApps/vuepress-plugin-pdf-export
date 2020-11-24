@@ -7,10 +7,12 @@ const generatePDF = require('./generatePdf')
 
 module.exports = options => {
   const theme = options.theme || '@vuepress/default'
+  const filter = options.filter || false
   const sorter = options.sorter || false
-  const outputFileName = options.outputFileName || 'site.pdf'
+  const outputFileName = options.outputFileName === null ? null : options.outputFileName || 'site.pdf'
   const puppeteerLaunchOptions = options.puppeteerLaunchOptions || {}
   const pageOptions = options.pageOptions || {}
+  const individualPdfFolder = options.individualPdfFolder;
 
   return cli => {
     cli
@@ -30,12 +32,14 @@ module.exports = options => {
 
         try {
           await generatePDF(nCtx, {
-            port: nCtx.devProcess.port,
+            filter,
             host: nCtx.devProcess.host,
-            sorter,
+            individualPdfFolder,
             outputFileName,
+            pageOptions,
+            port: nCtx.devProcess.port,
             puppeteerLaunchOptions,
-            pageOptions
+            sorter,
           })
         } catch (error) {
           console.error(red(error))

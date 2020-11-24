@@ -5,16 +5,22 @@ const { fs, logger, chalk } = require('@vuepress/shared-utils')
 const { yellow, gray } = chalk
 
 module.exports = async (ctx, {
-  port,
+  filter,
   host,
-  sorter,
+  individualPdfFolder,
   outputFileName,
+  pageOptions,
+  port,
   puppeteerLaunchOptions,
-  pageOptions
+  sorter,
 }) => {
   const { pages, tempPath } = ctx
-  const tempDir = join(tempPath, 'pdf')
-  fs.ensureDirSync(tempDir)
+  const pdfDir = individualPdfFolder || join(tempPath, 'pdf')
+
+  if (individualPdfFolder && fs.existsSync(pdfDir)) {
+    fs.removeSync(pdfDir)
+  }
+  fs.ensureDirSync(pdfDir)
 
   let exportPages = pages.slice(0)
 
@@ -22,12 +28,18 @@ module.exports = async (ctx, {
     exportPages = exportPages.sort(sorter)
   }
 
+  if (typeof filter === 'function') {
+    exportPages = exportPages.filter(filter)
+  }
+
   exportPages = exportPages.map(page => {
     return {
       url: page.path,
       title: page.title,
       location: `http://${host}:${port}${page.path}`,
-      path: `${tempDir}/${page.key}.pdf`
+      path: `${pdfDir}/${page.key}.pdf`,
+      key: page.key,
+      frontmatter: page.frontmatter,
     }
   })
 
@@ -50,35 +62,43 @@ module.exports = async (ctx, {
     )
 
     await browserPage.pdf({
-      path: pagePath,
       format: 'A4',
-      ...pageOptions
+      ...pageOptions,
+      path: pagePath,
     })
 
     logger.success(`Generated ${yellow(title)} ${gray(`${url}`)}`)
   }
 
-  await new Promise(resolve => {
-    const mergedPdf = new pdf.Document()
+  if (individualPdfFolder) {
+    fs.writeFileSync(`${pdfDir}/files.json`, JSON.stringify(exportPages), {encoding: 'UTF8'})
+  }
 
-    exportPages
-      .map(({ path }) => fs.readFileSync(path))
-      .forEach(file => {
-        const page = new pdf.ExternalDocument(file)
-        mergedPdf.addPagesOf(page)
+  if (outputFileName) {
+    await new Promise(resolve => {
+      const mergedPdf = new pdf.Document()
+
+      exportPages
+        .map(({path}) => fs.readFileSync(path))
+        .forEach(file => {
+          const page = new pdf.ExternalDocument(file)
+          mergedPdf.addPagesOf(page)
+        })
+
+      mergedPdf.asBuffer((err, data) => {
+        if (err) {
+          throw err
+        } else {
+          fs.writeFileSync(outputFileName, data, {encoding: 'binary'})
+          logger.success(`Export ${yellow(outputFileName)} file!`)
+          resolve()
+        }
       })
-
-    mergedPdf.asBuffer((err, data) => {
-      if (err) {
-        throw err
-      } else {
-        fs.writeFileSync(outputFileName, data, { encoding: 'binary' })
-        logger.success(`Export ${yellow(outputFileName)} file!`)
-        resolve()
-      }
     })
-  })
+  }
 
   await browser.close()
-  fs.removeSync(tempDir)
+  if (!individualPdfFolder) {
+    fs.removeSync(pdfDir)
+  }
 }
