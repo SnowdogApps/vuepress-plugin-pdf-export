@@ -8,6 +8,7 @@ module.exports = async (ctx, {
   port,
   host,
   sorter,
+  filter,
   outputFileName,
   puppeteerLaunchOptions,
   pageOptions
@@ -17,6 +18,10 @@ module.exports = async (ctx, {
   fs.ensureDirSync(tempDir)
 
   let exportPages = pages.slice(0)
+
+  if (typeof filter === 'function') {
+    exportPages = exportPages.filter(filter);
+  }
 
   if (typeof sorter === 'function') {
     exportPages = exportPages.sort(sorter)

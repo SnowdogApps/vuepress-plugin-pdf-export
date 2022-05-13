@@ -10,6 +10,7 @@ Vuepress plugin for exporting site as PDF
 ## Config options
 - `theme` - theme name (default `@vuepress/default`)
 - `sorter` - function for changing pages order (default `false`)
+- `filter` - function for filtering the pages (default `false`)
 - `outputFileName` - name of output file (default `site.pdf`)
 - `puppeteerLaunchOptions` - [Puppeteer launch options object](https://github.com/puppeteer/puppeteer/blob/v2.1.1/docs/api.md#puppeteerlaunchoptions) (default `{}`)
 - `pageOptions` - [Puppeteer page formatting options object](https://github.com/puppeteer/puppeteer/blob/v2.1.1/docs/api.md#pagepdfoptions) (default `{format: 'A4'}`)
