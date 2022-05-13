@@ -1,5 +1,8 @@
-# @snowdog/vuepress-plugin-pdf-export
+# @e8johan/vuepress-plugin-pdf-export
+
 Vuepress plugin for exporting site as PDF
+
+This is a fork of @snowdog/vuepress-plugin-pdf-export. All changes are available in a PR to the upstream repository. Use this package at your own peril.
 
 ## Features
 - Exports whole Vuepress based page as a single PDF file
