@@ -9,6 +9,7 @@ module.exports = options => {
   const theme = options.theme || '@vuepress/default'
   const sorter = options.sorter || false
   const filter = options.filter || false
+  const tocLevel = options.tocLevel || false
   const outputFileName = options.outputFileName || 'site.pdf'
   const puppeteerLaunchOptions = options.puppeteerLaunchOptions || {}
   const pageOptions = options.pageOptions || {}
@@ -35,6 +36,7 @@ module.exports = options => {
             host: nCtx.devProcess.host,
             sorter,
             filter,
+            tocLevel,
             outputFileName,
             puppeteerLaunchOptions,
             pageOptions
