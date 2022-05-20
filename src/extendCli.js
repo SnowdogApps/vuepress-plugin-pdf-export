@@ -10,6 +10,7 @@ module.exports = options => {
   const sorter = options.sorter || false
   const filter = options.filter || false
   const tocLevel = options.tocLevel || false
+  const frontPage = options.frontPage || false
   const outputFileName = options.outputFileName || 'site.pdf'
   const puppeteerLaunchOptions = options.puppeteerLaunchOptions || {}
   const pageOptions = options.pageOptions || {}
@@ -37,6 +38,7 @@ module.exports = options => {
             sorter,
             filter,
             tocLevel,
+            frontPage,
             outputFileName,
             puppeteerLaunchOptions,
             pageOptions

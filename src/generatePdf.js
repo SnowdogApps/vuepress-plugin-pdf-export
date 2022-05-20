@@ -39,6 +39,7 @@ module.exports = async (ctx, {
   sorter,
   filter,
   tocLevel,
+  frontPage,
   outputFileName,
   puppeteerLaunchOptions,
   pageOptions
@@ -142,6 +143,13 @@ module.exports = async (ctx, {
         paddingTop: 25.4 * pdf.mm,
         paddingBottom: 37.6 * pdf.mm,
       });
+
+      if (frontPage !== false) {
+        const file = fs.readFileSync(frontPage)
+        const page = new pdf.ExternalDocument(file)
+        mergedPdf.addPagesOf(page);
+        tocPageCount += page.pageCount;
+      }
 
       if (toc.length > 0) {
         _createToc(mergedPdf, toc, tocPageCount);
