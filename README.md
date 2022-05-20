@@ -11,12 +11,14 @@ This is a fork of @snowdog/vuepress-plugin-pdf-export. All changes are available
 - Designed to work well in headless environments like CI runners
 - Can filter and sort pages.
 - Can generate a rudimentary table of contents
+- Can insert a front page (or front pages)
 
 ## Config options
 - `theme` - theme name (default `@vuepress/default`)
 - `sorter` - function for changing pages order (default `false`)
 - `filter` - function for filtering the pages (default `false`)
 - `tocLevel` - function returning a TOC level for the pages, i.e. zero or one (default `false`)
+- `frontPage` - path to a pdf to inject first in the document. Typically a front page, but can be multiple pages too.
 - `outputFileName` - name of output file (default `site.pdf`)
 - `puppeteerLaunchOptions` - [Puppeteer launch options object](https://github.com/puppeteer/puppeteer/blob/v2.1.1/docs/api.md#puppeteerlaunchoptions) (default `{}`)
 - `pageOptions` - [Puppeteer page formatting options object](https://github.com/puppeteer/puppeteer/blob/v2.1.1/docs/api.md#pagepdfoptions) (default `{format: 'A4'}`)
